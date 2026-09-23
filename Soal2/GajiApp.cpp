@@ -10,6 +10,10 @@ private:
     string nama;
     int golongan;
 
+    int jamMasuk, menitMasuk;
+    int jamKeluar, menitKeluar;
+    int lamaJam, lamaMenit;
+
     float gapok;
     float tunjangan;
     float potongan;
@@ -60,34 +64,41 @@ private:
         }
     }
 
+    void hitungLamaKerja() {
+        int totalMasuk = jamMasuk * 60 + menitMasuk;
+        int totalKeluar = jamKeluar * 60 + menitKeluar;
+        int selisih = totalKeluar - totalMasuk;
+
+        if (selisih < 0) {
+            selisih += 24 * 60;
+        }
+
+        lamaJam = selisih / 60;
+        lamaMenit = selisih % 60;
+    }
+
 public:
     Gaji() {
         nip = "";
         nama = "";
         golongan = 0;
+        jamMasuk = menitMasuk = jamKeluar = menitKeluar = 0;
         gapok = tunjangan = potongan = gajiTotal = 0;
     }
 
-    Gaji(string nip, string nama, int golongan) {
+    Gaji(string nip, string nama, int golongan,
+         int jamMasuk, int menitMasuk, int jamKeluar, int menitKeluar) {
         this->nip = nip;
         this->nama = nama;
         this->golongan = golongan;
+        this->jamMasuk = jamMasuk;
+        this->menitMasuk = menitMasuk;
+        this->jamKeluar = jamKeluar;
+        this->menitKeluar = menitKeluar;
         gapok = tunjangan = potongan = gajiTotal = 0;
     }
 
-    void setNip(string nip) { this->nip = nip; }
-    void setNama(string nama) { this->nama = nama; }
-    void setGolongan(int golongan) { this->golongan = golongan; }
-
-    string getNip() { return nip; }
-    string getNama() { return nama; }
-    int getGolongan() { return golongan; }
-    float getGapok() { return gapok; }
-    float getTunjangan() { return tunjangan; }
-    float getPotongan() { return potongan; }
-    float getGajiTotal() { return gajiTotal; }
-
-    void inputGaji() {
+    void inputDariKelas() {
         cout << "Masukkan NIP            : ";
         cin >> nip;
         cout << "Masukkan nama lengkap   : ";
@@ -95,12 +106,21 @@ public:
         getline(cin, nama);
         cout << "Masukkan golongan (1-4) : ";
         cin >> golongan;
+        cout << "Jam masuk (0-23)        : ";
+        cin >> jamMasuk;
+        cout << "Menit masuk (0-59)      : ";
+        cin >> menitMasuk;
+        cout << "Jam keluar (0-23)       : ";
+        cin >> jamKeluar;
+        cout << "Menit keluar (0-59)     : ";
+        cin >> menitKeluar;
     }
 
     void proses() {
         hitungGapok();
         hitungPotongan();
         hitungTunjangan();
+        hitungLamaKerja();
         gajiTotal = gapok + tunjangan - potongan;
     }
 
@@ -115,42 +135,85 @@ public:
              << " | " << right << setw(11) << formatRupiah(gapok) << " | " << setw(11) << formatRupiah(tunjangan)
              << " | " << setw(11) << formatRupiah(potongan) << " | " << setw(11) << formatRupiah(gajiTotal) << " |" << endl;
         cout << garis << endl;
+
+        cout << "Waktu Masuk  : " << setw(2) << setfill('0') << jamMasuk << ":"
+             << setw(2) << setfill('0') << menitMasuk << endl;
+        cout << "Waktu Keluar : " << setw(2) << setfill('0') << jamKeluar << ":"
+             << setw(2) << setfill('0') << menitKeluar << endl;
+        cout << setfill(' ');
+        cout << "Lama Kerja   : " << lamaJam << " jam " << lamaMenit << " menit" << endl;
     }
 };
 
+void modeHardcode() {
+    Gaji karyawan("E001", "Budi Santoso", 3, 8, 0, 16, 30);
+    karyawan.proses();
+    karyawan.cetak();
+}
+
+void modeConstructor() {
+    string nip, nama;
+    int golongan, jamMasuk, menitMasuk, jamKeluar, menitKeluar;
+
+    cout << "Masukkan NIP            : ";
+    cin >> nip;
+    cout << "Masukkan nama lengkap   : ";
+    cin.ignore();
+    getline(cin, nama);
+    cout << "Masukkan golongan (1-4) : ";
+    cin >> golongan;
+    cout << "Jam masuk (0-23)        : ";
+    cin >> jamMasuk;
+    cout << "Menit masuk (0-59)      : ";
+    cin >> menitMasuk;
+    cout << "Jam keluar (0-23)       : ";
+    cin >> jamKeluar;
+    cout << "Menit keluar (0-59)     : ";
+    cin >> menitKeluar;
+
+    Gaji karyawan(nip, nama, golongan, jamMasuk, menitMasuk, jamKeluar, menitKeluar);
+    karyawan.proses();
+    karyawan.cetak();
+}
+
+void modeDalamKelas() {
+    Gaji karyawan;
+    karyawan.inputDariKelas();
+    karyawan.proses();
+    karyawan.cetak();
+}
+
 int main() {
     int pilihan;
-    int jumlahObjek = 0;
 
     do {
         cout << "\n=================================================" << endl;
-        cout << "         PROGRAM GAJI KARYAWAN (jalankan objek)" << endl;
+        cout << "         PROGRAM GAJI KARYAWAN" << endl;
         cout << "=================================================" << endl;
-        cout << "Objek yang sudah dijalankan : " << jumlahObjek << endl;
-        cout << "1. Jalankan objek Gaji baru (input data karyawan)" << endl;
+        cout << "1. Input Konstan (Hardcode)" << endl;
+        cout << "2. Input Lewat Constructor" << endl;
+        cout << "3. Input Dari Dalam Kelas" << endl;
         cout << "0. Keluar" << endl;
         cout << "Pilih menu : ";
         cin >> pilihan;
 
-        if (pilihan == 1) {
-            jumlahObjek++;
-            cout << "\n--- Objek ke-" << jumlahObjek << " ---" << endl;
-            Gaji karyawan;
-            karyawan.inputGaji();
-            karyawan.proses();
-            karyawan.cetak();
-        } else if (pilihan == 0) {
-            if (jumlahObjek < 3) {
-                cout << "\nProgram ini wajib menjalankan minimal 3 objek sebelum keluar." << endl;
-                cout << "Objek yang baru dijalankan: " << jumlahObjek << ". Silakan lanjutkan." << endl;
-                pilihan = -1;
-            } else {
-                cout << "\nProgram selesai. Total objek yang dijalankan: " << jumlahObjek << endl;
-            }
-        } else {
-            cout << "Pilihan tidak valid, silakan coba lagi." << endl;
+        switch (pilihan) {
+            case 1:
+                modeHardcode();
+                break;
+            case 2:
+                modeConstructor();
+                break;
+            case 3:
+                modeDalamKelas();
+                break;
+            case 0:
+                cout << "\nProgram selesai." << endl;
+                break;
+            default:
+                cout << "Pilihan tidak valid, silakan coba lagi." << endl;
         }
-    } while (!(pilihan == 0 && jumlahObjek >= 3));
+    } while (pilihan != 0);
 
     return 0;
 }
