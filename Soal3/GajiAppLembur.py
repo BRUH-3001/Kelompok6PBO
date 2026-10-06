@@ -1,12 +1,26 @@
 """
-Nama Program   : Program Gaji Lembur (java)
+Nama Program   : Program Gaji Lembur (Python)
 Nama & NPM     : Muhammad Yunus Habiby (140810250014)
                  Azrel Sakhi Reswara (140810250098)
                  Muhammad Kemal Firdaus (140810250101)
 Tanggal Dibuat : 06/10/2026
-Deskripsi      : Program menghitung total gaji yang diterima oleh karyawan
-
+Deskripsi      : Program menghitung total gaji yang diterima oleh karyawan dengan Validator Class (Python)
 """
+class Validator:
+    @staticmethod
+    def baca_angka_validasi(prompt, min_val, max_val):
+        while True:
+            try:
+                teks = input(prompt)
+                nilai = int(teks)
+
+                if min_val <= nilai <= max_val:
+                    return nilai
+                else:
+                    print(f"  [!] Nilai tidak valid! Harus antara {min_val} sampai {max_val}.")
+            except ValueError:
+                print("  [!] Input harus berupa angka bulat, tidak boleh huruf atau simbol!")
+
 class Waktu:
     def __init__(self, jam=0, menit=0, detik=0):
         self.jam = jam
@@ -15,9 +29,9 @@ class Waktu:
 
     def input_waktu(self, jenis):
         print(f"Masukkan Waktu {jenis}:")
-        self.jam = int(input("  Jam (0-23)   : "))
-        self.menit = int(input("  Menit (0-59) : "))
-        self.detik = int(input("  Detik (0-59) : "))
+        self.jam = Validator.baca_angka_validasi("  Jam (0-23)   : ", 0, 23)
+        self.menit = Validator.baca_angka_validasi("  Menit (0-59) : ", 0, 59)
+        self.detik = Validator.baca_angka_validasi("  Detik (0-59) : ", 0, 59)
 
     def hitung_selisih(self, akhir):
         awal_sec = self.jam * 3600 + self.menit * 60 + self.detik
@@ -52,7 +66,7 @@ class Pegawai:
     def input_pegawai(self):
         self.nip = input("Masukkan NIP          : ")
         self.nama = input("Masukkan Nama         : ")
-        self.gol = int(input("Masukkan Golongan(1-4): "))
+        self.gol = Validator.baca_angka_validasi("Masukkan Golongan(1-4): ", 1, 4)
         self.datang.input_waktu("Datang")
         self.pulang.input_waktu("Pulang")
         print("-" * 34)
@@ -144,11 +158,7 @@ class AppMenu:
             print("2. Gunakan Data Hardcode (3 Objek)")
             print("0. Keluar")
             
-            try:
-                pilihan = int(input("Pilih menu : "))
-            except ValueError:
-                print("Masukkan angka yang valid!")
-                continue
+            pilihan = Validator.baca_angka_validasi("Pilih menu (0-2) : ", 0, 2)
 
             if pilihan == 1:
                 cls.menu_input_dinamis()
@@ -157,12 +167,10 @@ class AppMenu:
             elif pilihan == 0:
                 print("\nProgram selesai.")
                 break
-            else:
-                print("Pilihan tidak valid!")
-
 
 def main():
     AppMenu.tampilkan_menu_utama()
+
 
 if __name__ == "__main__":
     main()

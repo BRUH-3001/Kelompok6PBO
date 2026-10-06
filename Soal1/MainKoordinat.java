@@ -2,9 +2,9 @@
 Nama Program : MainKoordinat.java
 Nama Kelompok: Muhammad Yunus Habiby (140810250014)
                Azrel Sakhi Reswara (140810250098)
-               Muhammad Kemal Firdaus (1408102500101)
+               Muhammad Kemal Firdaus (140810250101)
 Tanggal Buat : 06 Oktober 2026
-Deskripsi    : Program OOP Koordinat Kartesian dengan Passing Object & Menu (Java)
+Deskripsi    : Program OOP Koordinat Kartesian dengan Passing Object & Menu + Validator (Java)
 */
 
 import java.util.Scanner;
@@ -43,13 +43,10 @@ class Koordinat {
         return ordinat; 
     }
 
-    // --- Input & Output (Dalam Class) ---
-    public void inputKoordinat() {
-        Scanner input = new Scanner(System.in);
-        System.out.print("  Masukkan Absis (X)   : ");
-        this.absis = input.nextFloat();
-        System.out.print("  Masukkan Ordinat (Y) : ");
-        this.ordinat = input.nextFloat();
+    // --- Input dengan Validator ---
+    public void inputKoordinat(Scanner input) {
+        this.absis = Menu.bacaFloatValid(input, "  Masukkan Absis (X)   : ");
+        this.ordinat = Menu.bacaFloatValid(input, "  Masukkan Ordinat (Y) : ");
     }
 
     public void printKoordinat() {
@@ -93,7 +90,37 @@ class Koordinat {
 }
 
 class Menu {
-    // Output Luar Class
+    // --- HELPER VALIDATOR ---
+    public static int bacaAngkaValidasi(Scanner input, String prompt, int min, int max) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                String teks = input.next();
+                int nilai = Integer.parseInt(teks);
+
+                if (nilai >= min && nilai <= max) {
+                    return nilai;
+                } else {
+                    System.out.println("  [!] Nilai tidak valid! Harus antara " + min + " sampai " + max + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("  [!] Input harus berupa angka bulat, tidak boleh huruf atau simbol!");
+            }
+        }
+    }
+
+    public static float bacaFloatValid(Scanner input, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                String teks = input.next();
+                return Float.parseFloat(teks);
+            } catch (NumberFormatException e) {
+                System.out.println("  [!] Input harus berupa angka!");
+            }
+        }
+    }
+
     public static void printKoordinatLuar(Koordinat K) {
         System.out.println("Nilai Absis = " + K.getAbsis() + ", Nilai Ordinat = " + K.getOrdinat());
     }
@@ -106,16 +133,14 @@ class Menu {
         System.out.println("========================================");
         System.out.println("1. Cara 1 (Fungsi Return)");
         System.out.println("2. Cara 2 (Prosedur Void)");
-        System.out.print("Pilih Metode (1-2): ");
-        int cara = scan.nextInt();
+        int cara = bacaAngkaValidasi(scan, "Pilih Metode (1-2): ", 1, 2);
 
         System.out.println("\n--- PILIHAN PROSES PERHITUNGAN ---");
         System.out.println("1. Titik Tengah (dengan titik pembanding)");
         System.out.println("2. Pencerminan Terhadap Sumbu X");
         System.out.println("3. Pencerminan Terhadap Sumbu Y");
         System.out.println("4. Hitung Jarak (dengan titik pembanding)");
-        System.out.print("Pilih Proses (1-4): ");
-        int proses = scan.nextInt();
+        int proses = bacaAngkaValidasi(scan, "Pilih Proses (1-4): ", 1, 4);
 
         System.out.println("\n>>> HASIL PERHITUNGAN <<<");
         if (cara == 1) { // CARA 1 (RETURN)
@@ -155,13 +180,11 @@ class Menu {
         }
     }
 
-    // Sub Menu Pilihan Perhitungan
-    public static void tampilkanMenuUtama(){
+    public static void tampilkanMenuUtama() {
         Scanner scan = new Scanner(System.in);
 
-         // Objek 1 & 2 Didefinisikan Awal
-        Koordinat ttk1 = new Koordinat(2, 1); // Objek 1: Constructor Parameter
-        Koordinat ttk2 = new Koordinat();      // Objek 2: Setter
+        Koordinat ttk1 = new Koordinat(2, 1);
+        Koordinat ttk2 = new Koordinat();
         ttk2.setKoordinat(6, 3);
 
         int pilihanObjek;
@@ -173,8 +196,8 @@ class Menu {
             System.out.println("2. Objek 2 (Set via Setter      : (6, 3))");
             System.out.println("3. Objek 3 (Input 2 Titik oleh User)");
             System.out.println("4. Keluar Program");
-            System.out.print("Pilihan Objek (1-4): ");
-            pilihanObjek = scan.nextInt();
+            
+            pilihanObjek = bacaAngkaValidasi(scan, "Pilihan Objek (1-4): ", 1, 4);
 
             switch (pilihanObjek) {
                 case 1:
@@ -198,9 +221,9 @@ class Menu {
                     Koordinat ttkUser2 = new Koordinat();
                     System.out.println("\n[OBJEK 3 DIPILIH - INPUT 2 TITIK KOORDINAT]\n");
                     System.out.println("--- Input Titik Pertama (Titik Utama) ---");
-                    ttkUser1.inputKoordinat();
+                    ttkUser1.inputKoordinat(scan);
                     System.out.println("--- Input Titik Kedua (Titik Pembanding) ---");
-                    ttkUser2.inputKoordinat();
+                    ttkUser2.inputKoordinat(scan);
 
                     System.out.print("\nDetail Titik 1: "); 
                     ttkUser1.printKoordinat();
@@ -212,14 +235,11 @@ class Menu {
                 case 4:
                     System.out.println("\nProgram selesai!");
                     break;
-                default:
-                    System.out.println("\nPilihan tidak valid!");
-                    break;
             }
         } while (pilihanObjek != 4);
 
         scan.close();
-    }  
+    }
 }
 
 public class MainKoordinat {

@@ -3,18 +3,38 @@ Nama Program   : Program Selisih Waktu (C++)
 Nama & NPM     : Muhammad Yunus Habiby (140810250014)
                  Azrel Sakhi Reswara (140810250098)
                  Muhammad Kemal Firdaus (140810250101)
-Tanggal Dibuat : 06/10/2026
-Deskripsi      : Program OOP untuk mencari selisih waktu antara dua objek Waktu,
-                 dengan dua cara proses (Cara 1: fungsi return, Cara 2: void),
-                 dan input/output baik di dalam maupun di luar class.
-                 3 objek dibuat dengan 3 cara berbeda.
+Tanggal Dibuat : 06 Oktober 2026
+Deskripsi      : Program OOP untuk mencari selisih waktu dengan Validator Class (C++)
 */
 
 #include <iostream>
 #include <string>
 #include <cstdio>
 #include <cstdlib>
+#include <limits>
 using namespace std;
+
+class Validator {
+public:
+    static int bacaAngkaValidasi(const string& prompt, int min, int max) {
+        int nilai;
+        while (true) {
+            cout << prompt;
+            if (!(cin >> nilai)) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "  [!] Input harus berupa angka, tidak boleh huruf atau simbol!" << endl;
+                continue;
+            }
+
+            if (nilai >= min && nilai <= max) {
+                return nilai;
+            } else {
+                cout << "  [!] Nilai tidak valid! Harus antara " << min << " sampai " << max << "." << endl;
+            }
+        }
+    }
+};
 
 class Waktu {
 private:
@@ -46,35 +66,20 @@ public:
     }
 
     void inputWaktu() {
-        string baris;
-        cout << "Masukkan jam   : ";
-        getline(cin, baris);
-        jam = stoi(baris);
-        cout << "Masukkan menit : ";
-        getline(cin, baris);
-        menit = stoi(baris);
-        cout << "Masukkan detik : ";
-        getline(cin, baris);
-        detik = stoi(baris);
+        this->jam = Validator::bacaAngkaValidasi("  Masukkan jam (0-23)   : ", 0, 23);
+        this->menit = Validator::bacaAngkaValidasi("  Masukkan menit (0-59) : ", 0, 59);
+        this->detik = Validator::bacaAngkaValidasi("  Masukkan detik (0-59) : ", 0, 59);
     }
 
-    int getJam() { 
-        return jam; 
-    }
-    int getMenit() { 
-        return menit; 
-    }
-    int getDetik() { 
-        return detik; 
-    }
+    int getJam() { return jam; }
+    int getMenit() { return menit; }
+    int getDetik() { return detik; }
 
     void tampilkanWaktu() {
         printf("%02d:%02d:%02d\n", jam, menit, detik);
     }
 
-    // Cara 2 void
-    void selisihWaktu(Waktu w1, Waktu w2)
-    {
+    void selisihWaktu(Waktu w1, Waktu w2) {
         int totalDetik1 = w1.keTotalDetik();
         int totalDetik2 = w2.keTotalDetik();
         int selisih = abs(totalDetik1 - totalDetik2);
@@ -84,9 +89,7 @@ public:
         detik = selisih % 60;
     }
 
-    // Cara 1 return
-    Waktu selisihWaktu2(Waktu w)
-    {
+    Waktu selisihWaktu2(Waktu w) {
         int totalDetikThis = keTotalDetik();
         int totalDetikW = w.keTotalDetik();
         int selisih = abs(totalDetikThis - totalDetikW);
@@ -99,14 +102,6 @@ public:
     }
 };
 
-void tampilkanMenu();
-int inputPilihan();
-int inputAngka(string label);
-void tampilkanKeduaHasil(Waktu w1, Waktu w2);
-void jalankanObjek1();
-void jalankanObjek2();
-void jalankanObjek3();
-
 class Menu {
 public:
     static void tampilkanMenu() {
@@ -115,31 +110,10 @@ public:
         cout << "2. Objek 2 - via constructor, input di luar class" << endl;
         cout << "3. Objek 3 - input di dalam class (pakai inputWaktu())" << endl;
         cout << "0. Keluar" << endl;
-        cout << "Pilih menu: ";
-    }
-
-    static int inputPilihan() {
-        string baris;
-        int p = -1;
-        getline(cin, baris);
-        try {
-            p = stoi(baris);
-        }
-        catch (...) {
-            p = -1;
-        }
-        return p;
-    }
-
-    static int inputAngka(string label) {
-        cout << label;
-        string baris;
-        getline(cin, baris);
-        return stoi(baris);
     }
 
     static void tampilkanKeduaHasil(Waktu w1, Waktu w2) {
-        cout << "Waktu 1 : ";
+        cout << "\nWaktu 1 : ";
         w1.tampilkanWaktu();
         cout << "Waktu 2 : ";
         w2.tampilkanWaktu();
@@ -164,15 +138,15 @@ public:
     static void jalankanObjek2() {
         cout << "\n>> Objek 2: input diambil DI LUAR class, lalu dioper ke constructor" << endl;
         cout << "Waktu 1:" << endl;
-        int jam1 = inputAngka("  Jam   : ");
-        int menit1 = inputAngka("  Menit : ");
-        int detik1 = inputAngka("  Detik : ");
+        int jam1 = Validator::bacaAngkaValidasi("  Jam (0-23)   : ", 0, 23);
+        int menit1 = Validator::bacaAngkaValidasi("  Menit (0-59) : ", 0, 59);
+        int detik1 = Validator::bacaAngkaValidasi("  Detik (0-59) : ", 0, 59);
         Waktu w1(jam1, menit1, detik1);
 
         cout << "Waktu 2:" << endl;
-        int jam2 = inputAngka("  Jam   : ");
-        int menit2 = inputAngka("  Menit : ");
-        int detik2 = inputAngka("  Detik : ");
+        int jam2 = Validator::bacaAngkaValidasi("  Jam (0-23)   : ", 0, 23);
+        int menit2 = Validator::bacaAngkaValidasi("  Menit (0-59) : ", 0, 59);
+        int detik2 = Validator::bacaAngkaValidasi("  Detik (0-59) : ", 0, 59);
         Waktu w2(jam2, menit2, detik2);
 
         tampilkanKeduaHasil(w1, w2);
@@ -195,16 +169,14 @@ public:
         int pilihan;
 
         cout << "=======================================" << endl;
-        cout << "   PROGRAM SELISIH WAKTU" << endl;
+        cout << "    PROGRAM SELISIH WAKTU (C++)" << endl;
         cout << "=======================================" << endl;
 
-        do
-        {
+        do {
             tampilkanMenu();
-            pilihan = inputPilihan();
+            pilihan = Validator::bacaAngkaValidasi("Pilih menu (0-3): ", 0, 3);
 
-            switch (pilihan)
-            {
+            switch (pilihan) {
             case 1:
                 jalankanObjek1();
                 break;
@@ -215,10 +187,8 @@ public:
                 jalankanObjek3();
                 break;
             case 0:
-                cout << "Terima kasih, program selesai." << endl;
+                cout << "\nTerima kasih, program selesai." << endl;
                 break;
-            default:
-                cout << ">> Pilihan tidak valid, coba lagi." << endl;
             }
         } while (pilihan != 0);
     }
@@ -228,4 +198,3 @@ int main() {
     Menu::tampilkanMenuUtama();
     return 0;
 }
-    
