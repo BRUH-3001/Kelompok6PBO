@@ -3,14 +3,10 @@ Nama Program   : Program Gaji Lembur (java)
 Nama & NPM     : Muhammad Yunus Habiby (140810250014)
                  Azrel Sakhi Reswara (140810250098)
                  Muhammad Kemal Firdaus (140810250101)
-Tanggal Dibuat : 28/9/2026
+Tanggal Dibuat : 06/10/2026
 Deskripsi      : Program menghitung total gaji yang diterima oleh karyawan
 
 """
-
-# ============================================
-# CLASS 1: Waktu
-# ============================================
 class Waktu:
     def __init__(self, jam=0, menit=0, detik=0):
         self.jam = jam
@@ -39,9 +35,6 @@ class Waktu:
     def format_lembur(self):
         return f"{self.jam}:{self.menit:02d}:{self.detik:02d}"
 
-# ============================================
-# CLASS 2: Pegawai
-# ============================================
 class Pegawai:
     def __init__(self, nip="", nama="", gol=0, datang=None, pulang=None):
         self.nip = nip
@@ -102,64 +95,74 @@ class Pegawai:
               f"{self.format_rupiah(self.gaji_harian):>11} | {self.format_rupiah(self.uang_lembur):>11} | "
               f"{self.format_rupiah(self.total_gaji):>11} | {self.status_peringatan:<10} |")
 
-# ============================================
-# UTAMA (Main Program)
-# ============================================
-def cetak_laporan(daftar):
-    if not daftar:
-        print("Data belum diisi!")
-        return
+class AppMenu:
+    @staticmethod
+    def cetak_laporan(daftar):
+        if not daftar:
+            print("Data belum diisi!")
+            return
+            
+        print("\nDaftar Gaji Harian PT Informatika")
+        garis = "+----+-----+------------+-----+----------+----------+----------+------------+-------------+-------------+-------------+------------+"
+        print(garis)
+        print("| No | NIP | Nama       | Gol | Datang   | Pulang   | Lama     | Jam Lembur | Gaji Harian | Lembur      | Total       | Status     |")
+        print(garis)
+        for i, p in enumerate(daftar):
+            p.cetak_row(i + 1)
+        print(garis)
+
+    @classmethod
+    def menu_input_dinamis(cls):
+        daftar_pegawai = []
+        for i in range(3):
+            print(f"\n--- Input Pegawai ke-{i + 1} ---")
+            p = Pegawai()
+            p.input_pegawai()
+            p.proses()
+            daftar_pegawai.append(p)
+        cls.cetak_laporan(daftar_pegawai)
+
+    @classmethod
+    def menu_data_hardcode(cls):
+        p1 = Pegawai("001", "Ali", 3, Waktu(8, 0, 0), Waktu(17, 15, 10))
+        p2 = Pegawai("002", "Budi", 2, Waktu(7, 30, 0), Waktu(12, 0, 0))
+        p3 = Pegawai("003", "Citra", 4, Waktu(8, 0, 0), Waktu(20, 30, 0))
         
-    print("\nDaftar Gaji Harian PT Informatika")
-    garis = "+----+-----+------------+-----+----------+----------+----------+------------+-------------+-------------+-------------+------------+"
-    print(garis)
-    print("| No | NIP | Nama       | Gol | Datang   | Pulang   | Lama     | Jam Lembur | Gaji Harian | Lembur      | Total       | Status     |")
-    print(garis)
-    for i, p in enumerate(daftar):
-        p.cetak_row(i + 1)
-    print(garis)
+        daftar_pegawai = [p1, p2, p3]
+        for p in daftar_pegawai:
+            p.proses()
+            
+        cls.cetak_laporan(daftar_pegawai)
+
+    @classmethod
+    def tampilkan_menu_utama(cls):
+        while True:
+            print("\n=================================================")
+            print("        PROGRAM GAJI HARIAN PT INFORMATIKA")
+            print("=================================================")
+            print("1. Input Data Pegawai Dinamis (3 Objek)")
+            print("2. Gunakan Data Hardcode (3 Objek)")
+            print("0. Keluar")
+            
+            try:
+                pilihan = int(input("Pilih menu : "))
+            except ValueError:
+                print("Masukkan angka yang valid!")
+                continue
+
+            if pilihan == 1:
+                cls.menu_input_dinamis()
+            elif pilihan == 2:
+                cls.menu_data_hardcode()
+            elif pilihan == 0:
+                print("\nProgram selesai.")
+                break
+            else:
+                print("Pilihan tidak valid!")
+
 
 def main():
-    while True:
-        print("\n=================================================")
-        print("         PROGRAM GAJI HARIAN PT INFORMATIKA")
-        print("=================================================")
-        print("1. Input Data Pegawai Dinamis (3 Objek)")
-        print("2. Gunakan Data Hardcode (3 Objek)")
-        print("0. Keluar")
-        
-        try:
-            pilihan = int(input("Pilih menu : "))
-        except ValueError:
-            print("Masukkan angka yang valid!")
-            continue
-
-        if pilihan == 1:
-            daftar_pegawai = []
-            for i in range(3):
-                print(f"\n--- Input Pegawai ke-{i + 1} ---")
-                p = Pegawai()
-                p.input_pegawai()
-                p.proses()
-                daftar_pegawai.append(p)
-            cetak_laporan(daftar_pegawai)
-
-        elif pilihan == 2:
-            p1 = Pegawai("001", "Ali", 3, Waktu(8, 0, 0), Waktu(17, 15, 10))
-            p2 = Pegawai("002", "Budi", 2, Waktu(7, 30, 0), Waktu(12, 0, 0))
-            p3 = Pegawai("003", "Citra", 4, Waktu(8, 0, 0), Waktu(20, 30, 0))
-            
-            daftar_pegawai = [p1, p2, p3]
-            for p in daftar_pegawai:
-                p.proses()
-                
-            cetak_laporan(daftar_pegawai)
-
-        elif pilihan == 0:
-            print("\nProgram selesai.")
-            break
-        else:
-            print("Pilihan tidak valid!")
+    AppMenu.tampilkan_menu_utama()
 
 if __name__ == "__main__":
     main()

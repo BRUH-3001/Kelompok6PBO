@@ -3,7 +3,7 @@ Nama Program : MainKoordinat.java
 Nama Kelompok: Muhammad Yunus Habiby (140810250014)
                Azrel Sakhi Reswara (140810250098)
                Muhammad Kemal Firdaus (1408102500101)
-Tanggal Buat : 29 September 2026
+Tanggal Buat : 06 Oktober 2026
 Deskripsi    : Program OOP Koordinat Kartesian dengan Passing Object & Menu (Java)
 */
 
@@ -92,14 +92,12 @@ class Koordinat {
     }
 }
 
-public class MainKoordinat {
-
+class Menu {
     // Output Luar Class
     public static void printKoordinatLuar(Koordinat K) {
         System.out.println("Nilai Absis = " + K.getAbsis() + ", Nilai Ordinat = " + K.getOrdinat());
     }
 
-    // Sub Menu Pilihan Perhitungan
     public static void subMenuProses(Koordinat ttkAktif, Koordinat ttkPembanding, String namaObjek, Scanner scan) {
         Koordinat ttkHasil = new Koordinat();
 
@@ -157,10 +155,11 @@ public class MainKoordinat {
         }
     }
 
-    public static void main(String[] args) {
+    // Sub Menu Pilihan Perhitungan
+    public static void tampilkanMenuUtama(){
         Scanner scan = new Scanner(System.in);
 
-        // Objek 1 & 2 Didefinisikan Awal
+         // Objek 1 & 2 Didefinisikan Awal
         Koordinat ttk1 = new Koordinat(2, 1); // Objek 1: Constructor Parameter
         Koordinat ttk2 = new Koordinat();      // Objek 2: Setter
         ttk2.setKoordinat(6, 3);
@@ -218,5 +217,13 @@ public class MainKoordinat {
                     break;
             }
         } while (pilihanObjek != 4);
+
+        scan.close();
+    }  
+}
+
+public class MainKoordinat {
+    public static void main(String[] args) {
+        Menu.tampilkanMenuUtama();
     }
 }
