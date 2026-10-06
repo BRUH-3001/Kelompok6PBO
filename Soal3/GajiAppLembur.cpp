@@ -1,16 +1,17 @@
 /*
-Nama Program   : Program Gaji Lembur (java)
+Nama Program   : Program Gaji Lembur (C++)
 Nama & NPM     : Muhammad Yunus Habiby (140810250014)
                  Azrel Sakhi Reswara (140810250098)
                  Muhammad Kemal Firdaus (140810250101)
-Tanggal Dibuat : 28/9/2026
-Deskripsi      : Program menghitung total gaji yang diterima oleh karyawan
+Tanggal Dibuat : 6/10/2026
+Deskripsi      : Program menghitung total gaji dengan Class Menu & Validator
 */
 
 #include <iostream>
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <limits>
 
 using namespace std;
 
@@ -32,7 +33,34 @@ string formatJamMenitDetik(int jam, int menit, int detik) {
 }
 
 // ============================================
-// CLASS 1: Waktu
+// CLASS VALIDATOR (Handling Error Input)
+// ============================================
+class Validator {
+public:
+    static int bacaAngkaValidasi(const string& prompt, int min, int max) {
+        int nilai;
+        while (true) {
+            cout << prompt;
+            if (!(cin >> nilai)) {
+                // Menghapus status error pada cin
+                cin.clear();
+                // Mengabaikan sisa input pada buffer sampai newline
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "  [!] Input harus berupa angka, tidak boleh huruf atau simbol!\n";
+                continue;
+            }
+
+            if (nilai >= min && nilai <= max) {
+                return nilai;
+            } else {
+                cout << "  [!] Nilai tidak valid! Harus antara " << min << " sampai " << max << ".\n";
+            }
+        }
+    }
+};
+
+// ============================================
+// CLASS WAKTU
 // ============================================
 class Waktu {
 public:
@@ -42,9 +70,10 @@ public:
 
     void inputWaktu(string jenis) {
         cout << "Masukkan Waktu " << jenis << ":\n";
-        cout << "  Jam (0-23)   : "; cin >> jam;
-        cout << "  Menit (0-59) : "; cin >> menit;
-        cout << "  Detik (0-59) : "; cin >> detik;
+        // Menggunakan Validator untuk rentang jam, menit, detik
+        jam = Validator::bacaAngkaValidasi("  Jam (0-23)   : ", 0, 23);
+        menit = Validator::bacaAngkaValidasi("  Menit (0-59) : ", 0, 59);
+        detik = Validator::bacaAngkaValidasi("  Detik (0-59) : ", 0, 59);
     }
 
     Waktu hitungSelisih(Waktu akhir) {
@@ -69,7 +98,7 @@ public:
 };
 
 // ============================================
-// CLASS 2: Pegawai
+// CLASS PEGAWAI
 // ============================================
 class Pegawai {
 private:
@@ -87,7 +116,9 @@ public:
     void inputPegawai() {
         cout << "Masukkan NIP          : "; cin >> nip;
         cout << "Masukkan Nama         : "; cin >> ws; getline(cin, nama);
-        cout << "Masukkan Golongan(1-4): "; cin >> gol;
+        // Menggunakan Validator untuk golongan
+        gol = Validator::bacaAngkaValidasi("Masukkan Golongan(1-4): ", 1, 4);
+        
         datang.inputWaktu("Datang");
         pulang.inputWaktu("Pulang");
         cout << "----------------------------------\n";
@@ -136,64 +167,79 @@ public:
     }
 };
 
-void cetakLaporan(vector<Pegawai>& daftar) {
-    if(daftar.empty()) {
-        cout << "Data belum diisi!\n";
-        return;
-    }
-    cout << "\nDaftar Gaji Harian PT Informatika\n";
-    string garis = "+----+-----+------------+-----+----------+----------+----------+------------+-------------+-------------+-------------+------------+\n";
-    cout << garis;
-    cout << "| No | NIP | Nama       | Gol | Datang   | Pulang   | Lama     | Jam Lembur | Gaji Harian | Lembur      | Total       | Status     |\n";
-    cout << garis;
-    for (size_t i = 0; i < daftar.size(); i++) {
-        daftar[i].cetakRow(i + 1);
-    }
-    cout << garis;
-}
-
 // ============================================
-// CLASS 3: Utama (Main)
+// CLASS MENU (Menangani Tampilan & Alur)
 // ============================================
-int main() {
-    int pilihan;
+class MenuGaji {
+private:
     vector<Pegawai> daftarPegawai;
 
-    do {
-        cout << "\n=================================================\n";
-        cout << "         PROGRAM GAJI HARIAN PT INFORMATIKA\n";
-        cout << "=================================================\n";
-        cout << "1. Input Data Pegawai Dinamis (3 Objek)\n";
-        cout << "2. Gunakan Data Hardcode (3 Objek)\n";
-        cout << "0. Keluar\n";
-        cout << "Pilih menu : "; cin >> pilihan;
-
-        if (pilihan == 1) {
-            daftarPegawai.clear();
-            for (int i = 0; i < 3; i++) {
-                cout << "\n--- Input Pegawai ke-" << (i + 1) << " ---\n";
-                Pegawai p;
-                p.inputPegawai();
-                p.proses();
-                daftarPegawai.push_back(p);
-            }
-            cetakLaporan(daftarPegawai);
-        } 
-        else if (pilihan == 2) {
-            daftarPegawai.clear();
-            Pegawai p1("001", "Ali", 3, Waktu(8, 0, 0), Waktu(17, 15, 10));
-            Pegawai p2("002", "Budi", 2, Waktu(7, 30, 0), Waktu(12, 0, 0));
-            Pegawai p3("003", "Citra", 4, Waktu(8, 0, 0), Waktu(20, 30, 0));
-            
-            p1.proses(); p2.proses(); p3.proses();
-            daftarPegawai.push_back(p1);
-            daftarPegawai.push_back(p2);
-            daftarPegawai.push_back(p3);
-            
-            cetakLaporan(daftarPegawai);
+    void cetakLaporan() {
+        if(daftarPegawai.empty()) {
+            cout << "Data belum diisi!\n";
+            return;
         }
-    } while (pilihan != 0);
+        cout << "\nDaftar Gaji Harian PT Informatika\n";
+        string garis = "+----+-----+------------+-----+----------+----------+----------+------------+-------------+-------------+-------------+------------+\n";
+        cout << garis;
+        cout << "| No | NIP | Nama       | Gol | Datang   | Pulang   | Lama     | Jam Lembur | Gaji Harian | Lembur      | Total       | Status     |\n";
+        cout << garis;
+        for (size_t i = 0; i < daftarPegawai.size(); i++) {
+            daftarPegawai[i].cetakRow(i + 1);
+        }
+        cout << garis;
+    }
 
-    cout << "\nProgram selesai.\n";
+public:
+    void jalankan() {
+        int pilihan;
+
+        do {
+            cout << "\n=================================================\n";
+            cout << "         PROGRAM GAJI HARIAN PT INFORMATIKA\n";
+            cout << "=================================================\n";
+            cout << "1. Input Data Pegawai Dinamis (3 Objek)\n";
+            cout << "2. Gunakan Data Hardcode (3 Objek)\n";
+            cout << "0. Keluar\n";
+            
+            // Validasi input menu
+            pilihan = Validator::bacaAngkaValidasi("Pilih menu (0-2) : ", 0, 2);
+
+            if (pilihan == 1) {
+                daftarPegawai.clear();
+                for (int i = 0; i < 3; i++) {
+                    cout << "\n--- Input Pegawai ke-" << (i + 1) << " ---\n";
+                    Pegawai p;
+                    p.inputPegawai();
+                    p.proses();
+                    daftarPegawai.push_back(p);
+                }
+                cetakLaporan();
+            } 
+            else if (pilihan == 2) {
+                daftarPegawai.clear();
+                Pegawai p1("001", "Ali", 3, Waktu(8, 0, 0), Waktu(17, 15, 10));
+                Pegawai p2("002", "Budi", 2, Waktu(7, 30, 0), Waktu(12, 0, 0));
+                Pegawai p3("003", "Citra", 4, Waktu(8, 0, 0), Waktu(20, 30, 0));
+                
+                p1.proses(); p2.proses(); p3.proses();
+                daftarPegawai.push_back(p1);
+                daftarPegawai.push_back(p2);
+                daftarPegawai.push_back(p3);
+                
+                cetakLaporan();
+            }
+        } while (pilihan != 0);
+
+        cout << "\nProgram selesai.\n";
+    }
+};
+
+// ============================================
+// CLASS UTAMA (Main)
+// ============================================
+int main() {
+    MenuGaji aplikasi;
+    aplikasi.jalankan();
     return 0;
 }

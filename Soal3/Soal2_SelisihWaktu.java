@@ -3,16 +3,39 @@ Nama Program   : Program Selisih Waktu (java)
 Nama & NPM     : Muhammad Yunus Habiby (140810250014)
                  Azrel Sakhi Reswara (140810250098)
                  Muhammad Kemal Firdaus (140810250101)
-Tanggal Dibuat : 28/9/2026 
-Deskripsi      : Program OOP untuk mencari selisih waktu antara dua objek Waktu,
-                 dengan dua cara proses (Cara 1: fungsi return, Cara 2: void),
-                 dan input/output baik di dalam maupun di luar class.
-                 3 objek dibuat dengan 3 cara berbeda (konstanta, input di
-                 luar class, input di dalam class).
+Tanggal Dibuat : 6/10/2026 
+Deskripsi      : Program OOP untuk mencari selisih waktu antara dua objek Waktu
+                 dengan Class Validator dan Menu tersendiri.
 */
 
 import java.util.Scanner;
 
+// ==========================================
+// CLASS VALIDATOR (Handling Error Input)
+// ==========================================
+class Validator {
+    public static int bacaAngkaValidasi(Scanner input, String prompt, int min, int max) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                String teks = input.nextLine().trim();
+                int nilai = Integer.parseInt(teks);
+
+                if (nilai >= min && nilai <= max) {
+                    return nilai;
+                } else {
+                    System.out.println("  [!] Nilai tidak valid! Harus antara " + min + " sampai " + max + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("  [!] Input harus berupa angka bulat, tidak boleh huruf atau simbol!");
+            }
+        }
+    }
+}
+
+// ==========================================
+// CLASS WAKTU
+// ==========================================
 class Waktu {
     private int jam;
     private int menit;
@@ -37,14 +60,11 @@ class Waktu {
         this.detik = detik;
     }
 
-    // input dalam class
+    // input dalam class menggunakan Validator
     public void inputWaktu(Scanner scanner) {
-        System.out.print("Masukkan jam   : ");
-        this.jam = Integer.parseInt(scanner.nextLine().trim());
-        System.out.print("Masukkan menit : ");
-        this.menit = Integer.parseInt(scanner.nextLine().trim());
-        System.out.print("Masukkan detik : ");
-        this.detik = Integer.parseInt(scanner.nextLine().trim());
+        this.jam = Validator.bacaAngkaValidasi(scanner, "  Masukkan jam (0-23)   : ", 0, 23);
+        this.menit = Validator.bacaAngkaValidasi(scanner, "  Masukkan menit (0-59) : ", 0, 59);
+        this.detik = Validator.bacaAngkaValidasi(scanner, "  Masukkan detik (0-59) : ", 0, 59);
     }
 
     public int getJam() { return jam; }
@@ -85,10 +105,17 @@ class Waktu {
     }
 }
 
-public class Soal2_SelisihWaktu {
-    static Scanner sc = new Scanner(System.in);
+// ==========================================
+// CLASS MENU (Menangani Tampilan & Alur)
+// ==========================================
+class MenuWaktu {
+    private Scanner sc;
 
-    public static void main(String[] args) {
+    public MenuWaktu() {
+        sc = new Scanner(System.in);
+    }
+
+    public void jalankan() {
         int pilihan;
 
         System.out.println("=======================================");
@@ -97,7 +124,8 @@ public class Soal2_SelisihWaktu {
 
         do {
             tampilkanMenu();
-            pilihan = inputPilihan();
+            // Validasi input menu
+            pilihan = Validator.bacaAngkaValidasi(sc, "Pilih menu (0-3): ", 0, 3);
 
             switch (pilihan) {
                 case 1: jalankanObjek1(); break;
@@ -106,38 +134,22 @@ public class Soal2_SelisihWaktu {
                 case 0:
                     System.out.println("Terima kasih, program selesai.");
                     break;
-                default:
-                    System.out.println(">> Pilihan tidak valid, coba lagi.");
             }
         } while (pilihan != 0);
+        
+        sc.close();
     }
 
-    static void tampilkanMenu() {
+    private void tampilkanMenu() {
         System.out.println("\n---------------- MENU ----------------");
         System.out.println("1. Objek 1 - via constructor dg konstanta");
         System.out.println("2. Objek 2 - via constructor, input di luar class");
         System.out.println("3. Objek 3 - input di dalam class (pakai inputWaktu())");
         System.out.println("0. Keluar");
-        System.out.print("Pilih menu: ");
     }
 
-    static int inputPilihan() {
-        int p = -1;
-        try {
-            p = Integer.parseInt(sc.nextLine().trim());
-        } catch (NumberFormatException e) {
-            p = -1;
-        }
-        return p;
-    }
-
-    static int inputAngka(String label) {
-        System.out.print(label);
-        return Integer.parseInt(sc.nextLine().trim());
-    }
-
-    //output luar
-    static void tampilkanKeduaHasil(Waktu w1, Waktu w2) {
+    // output luar
+    private void tampilkanKeduaHasil(Waktu w1, Waktu w2) {
         System.out.print("Waktu 1 : "); w1.tampilkanWaktu();
         System.out.print("Waktu 2 : "); w2.tampilkanWaktu();
 
@@ -151,23 +163,31 @@ public class Soal2_SelisihWaktu {
         System.out.print("Selisih (cara void)   : "); hasilVoid.tampilkanWaktu();
     }
 
-    static void jalankanObjek1() {
+    private void jalankanObjek1() {
         System.out.println("\n>> Objek 1: nilai konstan lewat constructor");
         Waktu w1 = new Waktu(8, 0, 0);
         Waktu w2 = new Waktu(17, 15, 10);
         tampilkanKeduaHasil(w1, w2);
     }
 
-    static void jalankanObjek2() {
+    private void jalankanObjek2() {
         System.out.println("\n>> Objek 2: input diambil DI LUAR class, lalu dioper ke constructor");
         System.out.println("Waktu 1:");
-        Waktu w1 = new Waktu(inputAngka("  Jam   : "), inputAngka("  Menit : "), inputAngka("  Detik : "));
+        int j1 = Validator.bacaAngkaValidasi(sc, "  Jam (0-23)   : ", 0, 23);
+        int m1 = Validator.bacaAngkaValidasi(sc, "  Menit (0-59) : ", 0, 59);
+        int d1 = Validator.bacaAngkaValidasi(sc, "  Detik (0-59) : ", 0, 59);
+        Waktu w1 = new Waktu(j1, m1, d1);
+
         System.out.println("Waktu 2:");
-        Waktu w2 = new Waktu(inputAngka("  Jam   : "), inputAngka("  Menit : "), inputAngka("  Detik : "));
+        int j2 = Validator.bacaAngkaValidasi(sc, "  Jam (0-23)   : ", 0, 23);
+        int m2 = Validator.bacaAngkaValidasi(sc, "  Menit (0-59) : ", 0, 59);
+        int d2 = Validator.bacaAngkaValidasi(sc, "  Detik (0-59) : ", 0, 59);
+        Waktu w2 = new Waktu(j2, m2, d2);
+
         tampilkanKeduaHasil(w1, w2);
     }
 
-    static void jalankanObjek3() {
+    private void jalankanObjek3() {
         System.out.println("\n>> Objek 3: objek dibuat kosong, input diminta DI DALAM class");
         Waktu w1 = new Waktu();
         System.out.println("Waktu 1:");
@@ -178,5 +198,15 @@ public class Soal2_SelisihWaktu {
         w2.inputWaktu(sc);
 
         tampilkanKeduaHasil(w1, w2);
+    }
+}
+
+// ==========================================
+// MAIN EXECUTION
+// ==========================================
+public class Soal2_SelisihWaktu {
+    public static void main(String[] args) {
+        MenuWaktu menu = new MenuWaktu();
+        menu.jalankan();
     }
 }

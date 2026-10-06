@@ -2,6 +2,39 @@ import java.util.Scanner;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
+// ==========================================
+// CLASS VALIDATOR (Handling Error Input)
+// ==========================================
+class Validator {
+    // Helper: membaca validasi angka dengan batas min & max
+    public static int bacaAngkaValidasi(Scanner input, String prompt, int min, int max) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                String teks = input.nextLine();
+                int nilai = Integer.parseInt(teks);
+
+                if (nilai >= min && nilai <= max) {
+                    return nilai;
+                } else {
+                    System.out.println("  [!] Nilai tidak valid! Harus antara " + min + " sampai " + max + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("  [!] Input harus berupa angka bulat, tidak boleh huruf atau simbol!");
+            }
+        }
+    }
+
+    // Helper: membaca input string agar aman (tidak terlewat oleh nextInt sebelumnya)
+    public static String bacaString(Scanner input, String prompt) {
+        System.out.print(prompt);
+        return input.nextLine();
+    }
+}
+
+// ==========================================
+// CLASS GAJI
+// ==========================================
 class Gaji {
     private String nip;
     private String nama;
@@ -34,21 +67,14 @@ class Gaji {
     }
 
     public void inputDariKelas(Scanner input) {
-        System.out.print("Masukkan NIP            : ");
-        nip = input.nextLine();
-        System.out.print("Masukkan nama lengkap   : ");
-        nama = input.nextLine();
-        System.out.print("Masukkan golongan (1-4) : ");
-        golongan = input.nextInt();
-        System.out.print("Jam masuk (0-23)        : ");
-        jamMasuk = input.nextInt();
-        System.out.print("Menit masuk (0-59)      : ");
-        menitMasuk = input.nextInt();
-        System.out.print("Jam keluar (0-23)       : ");
-        jamKeluar = input.nextInt();
-        System.out.print("Menit keluar (0-59)     : ");
-        menitKeluar = input.nextInt();
-        input.nextLine();
+        // Menggunakan Validator untuk semua input
+        nip = Validator.bacaString(input, "Masukkan NIP            : ");
+        nama = Validator.bacaString(input, "Masukkan nama lengkap   : ");
+        golongan = Validator.bacaAngkaValidasi(input, "Masukkan golongan (1-4) : ", 1, 4);
+        jamMasuk = Validator.bacaAngkaValidasi(input, "Jam masuk (0-23)        : ", 0, 23);
+        menitMasuk = Validator.bacaAngkaValidasi(input, "Menit masuk (0-59)      : ", 0, 59);
+        jamKeluar = Validator.bacaAngkaValidasi(input, "Jam keluar (0-23)       : ", 0, 23);
+        menitKeluar = Validator.bacaAngkaValidasi(input, "Menit keluar (0-59)     : ", 0, 59);
     }
 
     private void hitungGapok() {
@@ -124,11 +150,13 @@ class Gaji {
     }
 }
 
-public class GajiApp {
-    public static void main(String[] args) {
+// ==========================================
+// CLASS MENU (Menangani Tampilan & Alur)
+// ==========================================
+class MenuGaji {
+    public void jalankan() {
         Scanner input = new Scanner(System.in);
         int pilihan;
-        int jumlahObjek = 0;
 
         do {
             System.out.println("\n=================================================");
@@ -138,9 +166,9 @@ public class GajiApp {
             System.out.println("2. Input Lewat Constructor");
             System.out.println("3. Input Dari Dalam Kelas");
             System.out.println("0. Keluar");
-            System.out.print("Pilih menu : ");
-            pilihan = input.nextInt();
-            input.nextLine();
+            
+            // Validasi input menu
+            pilihan = Validator.bacaAngkaValidasi(input, "Pilih menu (0-3) : ", 0, 3);
 
             switch (pilihan) {
                 case 1:
@@ -155,46 +183,47 @@ public class GajiApp {
                 case 0:
                     System.out.println("\nProgram selesai.");
                     break;
-                default:
-                    System.out.println("Pilihan tidak valid, silakan coba lagi.");
             }
         } while (pilihan != 0);
 
         input.close();
     }
 
-    private static void modeKonstan() {
+    private void modeKonstan() {
         Gaji karyawan = new Gaji("E001", "Budi Santoso", 3, 8, 0, 16, 30);
         karyawan.proses();
         karyawan.cetak();
     }
 
-    private static void modeConstructor(Scanner input) {
-        System.out.print("Masukkan NIP            : ");
-        String nip = input.nextLine();
-        System.out.print("Masukkan nama lengkap   : ");
-        String nama = input.nextLine();
-        System.out.print("Masukkan golongan (1-4) : ");
-        int golongan = input.nextInt();
-        System.out.print("Jam masuk (0-23)        : ");
-        int jamMasuk = input.nextInt();
-        System.out.print("Menit masuk (0-59)      : ");
-        int menitMasuk = input.nextInt();
-        System.out.print("Jam keluar (0-23)       : ");
-        int jamKeluar = input.nextInt();
-        System.out.print("Menit keluar (0-59)     : ");
-        int menitKeluar = input.nextInt();
-        input.nextLine();
+    private void modeConstructor(Scanner input) {
+        // Menggunakan Validator agar input tidak error
+        String nip = Validator.bacaString(input, "Masukkan NIP            : ");
+        String nama = Validator.bacaString(input, "Masukkan nama lengkap   : ");
+        int golongan = Validator.bacaAngkaValidasi(input, "Masukkan golongan (1-4) : ", 1, 4);
+        int jamMasuk = Validator.bacaAngkaValidasi(input, "Jam masuk (0-23)        : ", 0, 23);
+        int menitMasuk = Validator.bacaAngkaValidasi(input, "Menit masuk (0-59)      : ", 0, 59);
+        int jamKeluar = Validator.bacaAngkaValidasi(input, "Jam keluar (0-23)       : ", 0, 23);
+        int menitKeluar = Validator.bacaAngkaValidasi(input, "Menit keluar (0-59)     : ", 0, 59);
 
         Gaji karyawan = new Gaji(nip, nama, golongan, jamMasuk, menitMasuk, jamKeluar, menitKeluar);
         karyawan.proses();
         karyawan.cetak();
     }
 
-    private static void modeInputDalam(Scanner input) {
+    private void modeInputDalam(Scanner input) {
         Gaji karyawan = new Gaji();
         karyawan.inputDariKelas(input);
         karyawan.proses();
         karyawan.cetak();
+    }
+}
+
+// ==========================================
+// MAIN EXECUTION
+// ==========================================
+public class GajiApp {
+    public static void main(String[] args) {
+        MenuGaji menu = new MenuGaji();
+        menu.jalankan();
     }
 }
