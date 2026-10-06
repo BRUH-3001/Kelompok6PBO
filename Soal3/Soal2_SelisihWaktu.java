@@ -136,6 +136,7 @@ public class Soal2_SelisihWaktu {
         return Integer.parseInt(sc.nextLine().trim());
     }
 
+    //output luar
     static void tampilkanKeduaHasil(Waktu w1, Waktu w2) {
         System.out.print("Waktu 1 : "); w1.tampilkanWaktu();
         System.out.print("Waktu 2 : "); w2.tampilkanWaktu();
