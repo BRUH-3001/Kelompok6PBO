@@ -8,8 +8,6 @@ Deskripsi      : Program untuk mencari nilai rata-rata, nilai tertinggi, nilai t
 kumpulan data bertipe array of integer.
 */
 
-package GithubRepo.Kelompok6PBO.Tugas8;
-
 import java.util.Scanner;
 import java.util.Arrays;
 
