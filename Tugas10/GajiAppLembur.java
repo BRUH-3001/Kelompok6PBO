@@ -3,7 +3,7 @@ Nama Program   : GajiAppLembur.java
 Nama & NPM     : Muhammad Yunus Habiby (140810250014)
                  Azrel Sakhi Reswara (140810250098)
                  Muhammad Kemal Firdaus (140810250101)
-Tanggal Dibuat : 7 Oktober 2026
+Tanggal Dibuat : 24 Oktober 2026
 Deskripsi      : Program menghitung total gaji harian dan lembur pegawai 
                  menggunakan Array of Object (4 Class: Waktu, Pegawai, ArrayPegawai, Menu).
 */

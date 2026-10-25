@@ -187,10 +187,6 @@ class Menu:
                 self.tampilkan_pesan("\nProgram selesai. Terima kasih!")
                 break
 
-
-# ============================================
-# MAIN FUNCTION
-# ============================================
 def main():
     menu = Menu()
     menu.jalankan_menu()
