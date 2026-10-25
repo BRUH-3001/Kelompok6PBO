@@ -5,7 +5,7 @@ Nama & NPM     : Muhammad Yunus Habiby (140810250014)
                  Muhammad Kemal Firdaus (140810250101)
 Tanggal Dibuat : 25 Oktober 2026
 Deskripsi      : Program menghitung total gaji harian dan lembur pegawai (C++)
-                 menggunakan Array biasa of Object (4 Class: Waktu, Pegawai, ArrayPegawai, Menu).
+                 menggunakan Array of Object (5 Class: Waktu, Pegawai, ArrayPegawai, Menu, dan Person) dengan inheritance.
 */
 
 #include <iostream>
@@ -19,18 +19,21 @@ private:
     int jam, menit, detik;
 
 public:
+    // constructor kosong
     Waktu(){
         this->jam = 0;
         this->menit = 0;
         this->detik = 0;
     }
 
+    // constructor berparameter
     Waktu(int jam, int menit, int detik) {
         this->jam = jam;
         this->menit = menit;
         this->detik = detik;
     }
 
+    // setter
     void setJam(int jam) { 
         this->jam = jam; 
     }
@@ -46,6 +49,7 @@ public:
         this->detik = detik;
     }
 
+    // getter
     int getJam() { 
         return jam; 
     }
@@ -112,10 +116,13 @@ protected:
     std::string alamat;
 
 public:
+    // contructor kosong
     Person(){
         this->nama = "";
         this->alamat = "";
     }
+    
+    // contructor berparameter
     Person(std::string nama, std::string alamat){
         this->nama = nama;
         this->alamat = alamat;
@@ -151,6 +158,7 @@ private:
     std::string statusPeringatan;
 
 public:
+    // contructor kosong
     Pegawai() : Person() {
         this->nip = "";
         this->gol = 0;
@@ -160,6 +168,7 @@ public:
         this->statusPeringatan = "";
     }
 
+    //constructor berparameter
     Pegawai(std::string nip, std::string nama, std::string alamat, int gol, Waktu datang, Waktu pulang) : Person(nama, alamat) {
         this->nip = nip;
         this->gol = gol;
@@ -258,6 +267,7 @@ private:
     int jumlahData;
 
 public:
+    // contructor berparameter
     ArrayPegawai(int kapasitas = 3) {
         this->jumlahData = kapasitas;
     }

@@ -5,7 +5,7 @@ Nama & NPM     : Muhammad Yunus Habiby (140810250014)
                  Muhammad Kemal Firdaus (140810250101)
 Tanggal Dibuat : 24 Oktober 2026
 Deskripsi      : Program menghitung total gaji harian dan lembur pegawai 
-                 menggunakan Array of Object (4 Class: Waktu, Pegawai, ArrayPegawai, Menu).
+                 menggunakan Array of Object (5 Class: Waktu, Pegawai, ArrayPegawai, Menu, dan Person) dengan inheritance.
 */
 
 import java.util.Scanner;
@@ -87,13 +87,13 @@ class Waktu {
     public Waktu hitungSelisih(Waktu akhir) {
         int awalSec = this.jam * 3600 + this.menit * 60 + this.detik;
         int akhirSec = akhir.jam * 3600 + akhir.menit * 60 + akhir.detik;
-        int diff = akhirSec - awalSec;
+        int selisih = akhirSec - awalSec;
 
-        if (diff < 0) {
-            diff += 24 * 3600;
+        if (selisih < 0) {
+            selisih += 24 * 3600;
         }
 
-        return new Waktu(diff / 3600, (diff % 3600) / 60, diff % 60);
+        return new Waktu(selisih / 3600, (selisih % 3600) / 60, selisih % 60);
     }
 
     // Output Format
@@ -110,7 +110,7 @@ class Person {
     protected String nama;
     protected String alamat;
 
-    //Constructor
+    // Constructor
     public Person() {
         this.nama = "";
         this.alamat = "";
@@ -121,7 +121,7 @@ class Person {
         this.alamat = alamat;
     }
 
-    //Getter
+    // Getter
     public String getNama() {
         return nama;
     }
@@ -130,7 +130,7 @@ class Person {
         return alamat;
     }
 
-    //Setter
+    // Setter
     public void setNama(String nama) {
         this.nama = nama;
     }
@@ -138,7 +138,6 @@ class Person {
     public void setAlamat(String alamat) {
         this.alamat = alamat;
     }
-    
 }
 
 class Pegawai extends Person {
@@ -166,7 +165,7 @@ class Pegawai extends Person {
     }
 
     public Pegawai(String nip, String nama, String alamat, int gol, Waktu datang, Waktu pulang) {
-        super(nama,alamat);
+        super(nama, alamat);
         this.nip = nip;
         this.gol = gol;
         this.datang = datang;
@@ -233,10 +232,14 @@ class Pegawai extends Person {
         totalGaji = gajiHarian + uangLembur;
     }
 
+    public double getTotalGaji() {
+        return totalGaji;
+    }
+
     // Method Output
     public void cetakRow(int no, DecimalFormat rupiah) {
-        System.out.printf("| %-2d | %-3s | %-10s | %-3d | %-8s | %-8s | %-8s | %-10s | %11s | %11s | %11s | %-10s |%n",
-                no, nip, nama, gol, alamat,
+        System.out.printf("| %-2d | %-3s | %-10s | %-10s | %-3d | %-8s | %-8s | %-8s | %-10s | %-11s | %-10s | %-10s | %-10s |%n",
+                no, nip, nama, alamat, gol,
                 datang.formatWaktu(), pulang.formatWaktu(),
                 lamaKerja.formatWaktu(),
                 lamaLembur.formatLembur(),
@@ -251,7 +254,7 @@ class ArrayPegawai {
     private Pegawai[] listPegawai;
     private int jumlahData;
 
-    // Constructor: Alokasi array & instansiasi elemen objek di awal
+    // Constructor
     public ArrayPegawai(int kapasitas) {
         this.jumlahData = kapasitas;
         this.listPegawai = new Pegawai[kapasitas];
@@ -268,9 +271,9 @@ class ArrayPegawai {
     }
 
     public void HardcodeData() {
-        listPegawai[0] = new Pegawai("001", "Azrel", "Bogor", 3, new Waktu(8, 30, 0), new Waktu(16, 0, 0));
-        listPegawai[1] = new Pegawai("002", "Kemal", "Jakarta", 4, new Waktu(9, 0, 0), new Waktu(21, 30, 0));
-        listPegawai[2] = new Pegawai("003", "Yunus", "Tangerang",  2, new Waktu(12, 40, 0), new Waktu(23, 30, 0));
+        listPegawai[0] = new Pegawai("001", "Ali", "Dago 4", 3, new Waktu(8, 0, 0), new Waktu(17, 15, 10));
+        listPegawai[1] = new Pegawai("004", "Ida", "Uber 3", 2, new Waktu(8, 0, 0), new Waktu(15, 30, 0));
+        listPegawai[2] = new Pegawai("005", "Adi", "Riung 10", 1, new Waktu(8, 0, 0), new Waktu(18, 0, 0));
     }
 
     public void prosesSemua() {
@@ -286,19 +289,33 @@ class ArrayPegawai {
         simbol.setGroupingSeparator('.');
         DecimalFormat rupiah = new DecimalFormat("#,###", simbol);
 
-        System.out.println("\nDaftar Gaji Harian PT Informatika");
-        String garis = "+----+-----+------------+-----+----------+----------+----------+------------+-------------+-------------+-------------+------------+";
+        System.out.println("\n               Daftar Gaji Harian PT Informatika");
+        String garis = "+----+-----+------------+------------+-----+----------+----------+----------+------------+-------------+------------+------------+------------+";
         System.out.println(garis);
-        System.out.printf("| %-2s | %-3s | %-10s | %-3s | %-8s | %-8s | %-8s | %-10s | %11s | %11s | %11s | %-10s |%n",
+        System.out.printf("| %-2s | %-3s | %-10s | %-10s | %-3s | %-8s | %-8s | %-8s | %-10s | %-11s | %-10s | %-10s | %-10s |%n",
                 "No", "NIP", "Nama", "Alamat", "Gol", "Datang", "Pulang", "Lama", "Jam Lembur", "Gaji Harian", "Lembur", "Total", "Status");
         System.out.println(garis);
+
+        double totalGajiKeseluruhan = 0;
+        double gajiMax = listPegawai[0].getTotalGaji();
+        double gajiMin = listPegawai[0].getTotalGaji();
 
         for (int i = 0; i < jumlahData; i++) {
             if (listPegawai[i] != null) {
                 listPegawai[i].cetakRow(i + 1, rupiah);
+
+                double g = listPegawai[i].getTotalGaji();
+                totalGajiKeseluruhan += g;
+                if (g > gajiMax) gajiMax = g;
+                if (g < gajiMin) gajiMin = g;
             }
         }
         System.out.println(garis);
+
+        double rataRata = totalGajiKeseluruhan / jumlahData;
+        System.out.println("Rata-rata Gaji : Rp " + rupiah.format(rataRata));
+        System.out.println("Gaji Tertinggi : Rp " + rupiah.format(gajiMax));
+        System.out.println("Gaji Terendah  : Rp " + rupiah.format(gajiMin));
     }
 }
 
