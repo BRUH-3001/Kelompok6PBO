@@ -143,7 +143,7 @@ public:
     }
 };
 
-class Pegawai : public Person {
+class Pegawai : protected Person {
 private:
     std::string nip;
     int gol;
