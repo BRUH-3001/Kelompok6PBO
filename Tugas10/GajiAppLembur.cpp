@@ -14,14 +14,12 @@ Deskripsi      : Program menghitung total gaji harian dan lembur pegawai (C++)
 #include <limits>
 #include <cstdio>
 
-using namespace std;
-
-class Waktu {
+class Waktu{
 private:
     int jam, menit, detik;
 
 public:
-    Waktu() {
+    Waktu(){
         this->jam = 0;
         this->menit = 0;
         this->detik = 0;
@@ -58,26 +56,26 @@ public:
         return detik; 
     }
 
-    static int bacaAngkaValidasi(string prompt, int minVal, int maxVal) {
+    static int bacaAngkaValidasi(std::string prompt, int minVal, int maxVal) {
         int nilai;
         while (true) {
-            cout << prompt;
-            if (cin >> nilai) {
+            std::cout << prompt;
+            if (std::cin >> nilai) {
                 if (nilai >= minVal && nilai <= maxVal) {
                     return nilai;
                 } else {
-                    cout << "  [!] Nilai tidak valid! Harus antara " << minVal << " sampai " << maxVal << "." << endl;
+                    std::cout << "  [!] Nilai tidak valid! Harus antara " << minVal << " sampai " << maxVal << "." << std::endl;
                 }
             } else {
-                cout << "  [!] Input harus berupa angka bulat, tidak boleh huruf atau simbol!" << endl;
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                std::cout << "  [!] Input harus berupa angka bulat, tidak boleh huruf atau simbol!" << std::endl;
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
         }
     }
 
-    void inputWaktu(string jenis) {
-        cout << "Masukkan Waktu " << jenis << ":" << endl;
+    void inputWaktu(std::string jenis) {
+        std::cout << "Masukkan Waktu " << jenis << ":" << std::endl;
         this->jam = bacaAngkaValidasi("  Jam (0-23)   : ", 0, 23);
         this->menit = bacaAngkaValidasi("  Menit (0-59) : ", 0, 59);
         this->detik = bacaAngkaValidasi("  Detik (0-59) : ", 0, 59);
@@ -86,32 +84,61 @@ public:
     Waktu hitungSelisih(Waktu akhir) {
         int awalSec = this->jam * 3600 + this->menit * 60 + this->detik;
         int akhirSec = akhir.jam * 3600 + akhir.menit * 60 + akhir.detik;
-        int diff = akhirSec - awalSec;
+        int selisih = akhirSec - awalSec;
 
-        if (diff < 0) {
-            diff += 24 * 3600;
+        if (selisih < 0) {
+            selisih += 24 * 3600;
         }
 
-        return Waktu(diff / 3600, (diff % 3600) / 60, diff % 60);
+        return Waktu(selisih / 3600, (selisih % 3600) / 60, selisih % 60);
     }
 
-    string formatWaktu() {
+    std::string formatWaktu() {
         char buffer[10];
         snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d", jam, menit, detik);
-        return string(buffer);
+        return std::string(buffer);
     }
 
-    string formatLembur() {
+    std::string formatLembur() {
         char buffer[10];
         snprintf(buffer, sizeof(buffer), "%d:%02d:%02d", jam, menit, detik);
-        return string(buffer);
+        return std::string(buffer);
     }
 };
 
-class Pegawai {
+class Person {
+protected:
+    std::string nama;
+    std::string alamat;
+
+public:
+    Person(){
+        this->nama = "";
+        this->alamat = "";
+    }
+    Person(std::string nama, std::string alamat){
+        this->nama = nama;
+        this->alamat = alamat;
+    }
+
+    void inputPerson(){
+        std::cout << "Masukkan Nama         : ";
+        std::getline(std::cin, nama);
+        std::cout << "Masukkan Alamat       : ";
+        std::getline(std::cin, alamat);
+    }
+
+    std::string getNama(){
+        return nama;
+    }
+    std::string getAlamat(){
+        return alamat;
+    }
+};
+
+class Pegawai : public Person {
 private:
-    string nip;
-    string nama;
+    std::string nip;
     int gol;
     Waktu datang;
     Waktu pulang;
@@ -121,12 +148,11 @@ private:
     double gajiHarian;
     double uangLembur;
     double totalGaji;
-    string statusPeringatan;
+    std::string statusPeringatan;
 
 public:
-    Pegawai() {
+    Pegawai() : Person() {
         this->nip = "";
-        this->nama = "";
         this->gol = 0;
         this->gajiHarian = 0;
         this->uangLembur = 0;
@@ -134,9 +160,8 @@ public:
         this->statusPeringatan = "";
     }
 
-    Pegawai(string nip, string nama, int gol, Waktu datang, Waktu pulang) {
+    Pegawai(std::string nip, std::string nama, std::string alamat, int gol, Waktu datang, Waktu pulang) : Person(nama, alamat) {
         this->nip = nip;
-        this->nama = nama;
         this->gol = gol;
         this->datang = datang;
         this->pulang = pulang;
@@ -147,15 +172,16 @@ public:
     }
 
     void inputPegawai() {
-        cout << "Masukkan NIP          : ";
-        cin >> nip;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Masukkan Nama         : ";
-        getline(cin, nama);
+        std::cout << "Masukkan NIP          : ";
+        std::cin >> nip;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        
+        inputPerson();
+
         gol = Waktu::bacaAngkaValidasi("Masukkan Golongan(1-4): ", 1, 4);
         datang.inputWaktu("Datang");
         pulang.inputWaktu("Pulang");
-        cout << "----------------------------------" << endl;
+        std::cout << "----------------------------------" << std::endl;
     }
 
     void proses() {
@@ -200,8 +226,8 @@ public:
         totalGaji = gajiHarian + uangLembur;
     }
 
-    static string formatRupiah(double nilai) {
-        string str = to_string((long long)nilai);
+    static std::string formatRupiah(double nilai) {
+        std::string str = std::to_string((long long)nilai);
         int n = str.length();
         for (int i = n - 3; i > 0; i -= 3) {
             str.insert(i, ".");
@@ -210,8 +236,8 @@ public:
     }
 
     void cetakRow(int no) {
-        printf("| %-2d | %-3s | %-10s | %-3d | %-8s | %-8s | %-8s | %-10s | %11s | %11s | %11s | %-10s |\n",
-               no, nip.c_str(), nama.c_str(), gol,
+        printf("| %-2d | %-3s | %-10s | %-10s | %-3d | %-8s | %-8s | %-8s | %-10s | %11s | %11s | %11s | %-10s |\n",
+               no, nip.c_str(), nama.c_str(), alamat.c_str(), gol,
                datang.formatWaktu().c_str(), pulang.formatWaktu().c_str(),
                lamaKerja.formatWaktu().c_str(),
                lamaLembur.formatLembur().c_str(),
@@ -220,11 +246,15 @@ public:
                formatRupiah(totalGaji).c_str(),
                statusPeringatan.c_str());
     }
+
+    double getTotalGaji(){
+        return totalGaji;
+    }
 };
 
 class ArrayPegawai {
 private:
-    Pegawai listPegawai[3]; // Array 
+    Pegawai listPegawai[3]; 
     int jumlahData;
 
 public:
@@ -234,15 +264,15 @@ public:
 
     void inputDaftarPegawai() {
         for (int i = 0; i < jumlahData; i++) {
-            cout << "\n--- Input Pegawai ke-" << (i + 1) << " ---" << endl;
+            std::cout << "\n--- Input Pegawai ke-" << (i + 1) << " ---" << std::endl;
             listPegawai[i].inputPegawai();
         }
     }
 
     void HardcodeData() {
-        listPegawai[0] = Pegawai("001", "Azrel", 3, Waktu(8, 30, 0), Waktu(16, 0, 0));
-        listPegawai[1] = Pegawai("002", "Kemal", 4, Waktu(9, 0, 0), Waktu(21, 30, 0));
-        listPegawai[2] = Pegawai("003", "Yunus", 2, Waktu(12, 40, 0), Waktu(23, 30, 0));
+        listPegawai[0] = Pegawai("001", "Ali", "Dago 4", 3, Waktu(8, 0, 0), Waktu(17, 15, 10));
+        listPegawai[1] = Pegawai("004", "Ida", "Uber 3", 2, Waktu(9, 0, 0), Waktu(21, 30, 0));
+        listPegawai[2] = Pegawai("005", "Adi", "Riung 10", 1, Waktu(12, 40, 0), Waktu(23, 30, 0));
     }
 
     void prosesSemua() {
@@ -252,35 +282,53 @@ public:
     }
 
     void cetakLaporan() {
-        cout << "\nDaftar Gaji Harian PT Informatika" << endl;
-        string garis = "+----+-----+------------+-----+----------+----------+----------+------------+-------------+-------------+-------------+------------+";
-        cout << garis << endl;
-        printf("| %-2s | %-3s | %-10s | %-3s | %-8s | %-8s | %-8s | %-10s | %11s | %11s | %11s | %-10s |\n",
-               "No", "NIP", "Nama", "Gol", "Datang", "Pulang", "Lama", "Jam Lembur", "Gaji Harian", "Lembur", "Total", "Status");
-        cout << garis << endl;
+        std::cout << "\nDaftar Gaji Harian PT Informatika" << std::endl;
+        std::string garis = "+----+-----+------------+------------+-----+----------+----------+----------+------------+-------------+-------------+-------------+------------+";
+        std::cout << garis << std::endl;
+        printf("| %-2s | %-3s | %-10s | %-10s | %-3s | %-8s | %-8s | %-8s | %-10s | %11s | %11s | %11s | %-10s |\n",
+               "No", "NIP", "Nama", "Alamat", "Gol", "Datang", "Pulang", "Lama", "Jam Lembur", "Gaji Harian", "Lembur", "Total", "Status");
+        std::cout << garis << std::endl;
+
+        double totalGajiKeseluruhan = 0;
+        double gajiMax = listPegawai[0].getTotalGaji();
+        double gajiMin = listPegawai[0].getTotalGaji();
 
         for (int i = 0; i < jumlahData; i++) {
             listPegawai[i].cetakRow(i + 1);
+
+            double g = listPegawai[i].getTotalGaji();
+            totalGajiKeseluruhan += g;
+            if(g > gajiMax){
+                gajiMax = g;
+            }
+            if (g < gajiMin){
+                gajiMin = g;
+            }
         }
-        cout << garis << endl;
+        std::cout << garis << std::endl;
+
+        double rataRata = totalGajiKeseluruhan / jumlahData;
+        std::cout << "Rata-rata Gaji : Rp " << Pegawai::formatRupiah(rataRata) << std::endl;
+        std::cout << "Gaji Tertinggi : Rp " << Pegawai::formatRupiah(gajiMax) << std::endl;
+        std::cout << "Gaji Terendah  : Rp " << Pegawai::formatRupiah(gajiMin) << std::endl;
     }
 };
 
 class Menu {
 public:
-    static void tampilkanPesan(string pesan) {
-        cout << pesan << endl;
+    static void tampilkanPesan(std::string pesan) {
+        std::cout << pesan << std::endl;
     }
 
     void jalankanMenu() {
         int pilihan;
         do {
-            cout << "\n=================================================" << endl;
-            cout << "         PROGRAM GAJI HARIAN PT INFORMATIKA" << endl;
-            cout << "=================================================" << endl;
-            cout << "1. Input Data Pegawai Dinamis (3 Objek)" << endl;
-            cout << "2. Gunakan Data Hardcode (3 Objek - Sesuai Contoh)" << endl;
-            cout << "0. Keluar" << endl;
+            std::cout << "\n=================================================" << std::endl;
+            std::cout << "         PROGRAM GAJI HARIAN PT INFORMATIKA" << std::endl;
+            std::cout << "=================================================" << std::endl;
+            std::cout << "1. Input Data Pegawai Dinamis (3 Objek)" << std::endl;
+            std::cout << "2. Gunakan Data Hardcode (3 Objek - Sesuai Contoh)" << std::endl;
+            std::cout << "0. Keluar" << std::endl;
 
             pilihan = Waktu::bacaAngkaValidasi("Pilih menu : ", 0, 2);
 
