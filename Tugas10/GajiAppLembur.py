@@ -155,9 +155,9 @@ class ArrayPegawai:
             self.list_pegawai[i].input_pegawai()
 
     def HardcodeData(self):
-        self.list_pegawai[0] = Pegawai("001", "Azrel", "Bogor", 3, Waktu(8, 30, 0), Waktu(16, 0, 0))
-        self.list_pegawai[1] = Pegawai("002", "Kemal", "Jakarta", 4, Waktu(9, 0, 0), Waktu(21, 30, 0))
-        self.list_pegawai[2] = Pegawai("003", "Yunus", "Tangerang", 2, Waktu(12, 40, 0), Waktu(23, 30, 0))
+        self.list_pegawai[0] = Pegawai("001", "Ali", "Dago 4", 3, Waktu(8, 30, 0), Waktu(16, 0, 0))
+        self.list_pegawai[1] = Pegawai("004", "Ida", "Uber 3", 2, Waktu(9, 0, 0), Waktu(21, 30, 0))
+        self.list_pegawai[2] = Pegawai("005", "Adi", "Riung 10", 1, Waktu(12, 40, 0), Waktu(23, 30, 0))
 
     def proses_semua(self):
         for p in self.list_pegawai:
