@@ -3,9 +3,10 @@ Nama Program   : GajiAppLembur.py
 Nama & NPM     : Muhammad Yunus Habiby (140810250014)
                  Azrel Sakhi Reswara (140810250098)
                  Muhammad Kemal Firdaus (140810250101)
-Tanggal Dibuat : 14 Oktober 2026
+Tanggal Dibuat : 25 Oktober 2026
 Deskripsi      : Program menghitung total gaji harian dan lembur pegawai (Python)
-                 menggunakan Array of Object (4 Class: Waktu, Pegawai, ArrayPegawai, Menu).
+                 menggunakan Array of Object dan Inheritance
+                 (5 Class: Waktu, Person, Pegawai, ArrayPegawai, Menu).
 """
 
 class Waktu:
@@ -63,10 +64,27 @@ class Waktu:
     def format_lembur(self):
         return f"{self.jam}:{self.menit:02d}:{self.detik:02d}"
 
-class Pegawai:
-    def __init__(self, nip="", nama="", gol=0, datang=None, pulang=None):
-        self.nip = nip
+class Person:
+    def __init__(self, nama="", alamat=""):
         self.nama = nama
+        self.alamat = alamat
+
+    def get_nama(self):
+        return self.nama
+
+    def get_alamat(self):
+        return self.alamat
+
+    def set_nama(self, nama):
+        self.nama = nama
+
+    def set_alamat(self, alamat):
+        self.alamat = alamat
+
+class Pegawai(Person):
+    def __init__(self, nip="", nama="", alamat="", gol=0, datang=None, pulang=None):
+        super().__init__(nama, alamat)
+        self.nip = nip
         self.gol = gol
         self.datang = datang if datang else Waktu()
         self.pulang = pulang if pulang else Waktu()
@@ -80,6 +98,7 @@ class Pegawai:
     def input_pegawai(self):
         self.nip = input("Masukkan NIP          : ")
         self.nama = input("Masukkan Nama         : ")
+        self.alamat = input("Masukkan Alamat       : ")
         self.gol = Waktu.baca_angka_validasi("Masukkan Golongan(1-4): ", 1, 4)
         self.datang.input_waktu("Datang")
         self.pulang.input_waktu("Pulang")
@@ -118,7 +137,7 @@ class Pegawai:
         return f"{int(angka):,}".replace(",", ".")
 
     def cetak_row(self, no):
-        print(f"| {no:<2} | {self.nip:<3} | {self.nama:<10} | {self.gol:<3} | "
+        print(f"| {no:<2} | {self.nip:<3} | {self.nama:<10} | {self.alamat:<10} | {self.gol:<3} | "
               f"{self.datang.format_waktu():<8} | {self.pulang.format_waktu():<8} | "
               f"{self.lama_kerja.format_waktu():<8} | {self.lama_lembur.format_lembur():<10} | "
               f"{self.format_rupiah(self.gaji_harian):>11} | {self.format_rupiah(self.uang_lembur):>11} | "
@@ -127,7 +146,7 @@ class Pegawai:
 class ArrayPegawai:
     def __init__(self, kapasitas):
         self.jumlah_data = kapasitas
-        # Menginstansiasi objek Pegawai di setiap elemen array sejak constructor
+        # menginstansiasi objek pegawai di setiap elemen array sejak constructor
         self.list_pegawai = [Pegawai() for _ in range(kapasitas)]
 
     def input_daftar_pegawai(self):
@@ -136,9 +155,9 @@ class ArrayPegawai:
             self.list_pegawai[i].input_pegawai()
 
     def HardcodeData(self):
-        self.list_pegawai[0] = Pegawai("001", "Azrel", 3, Waktu(8, 30, 0), Waktu(16, 0, 0))
-        self.list_pegawai[1] = Pegawai("002", "Kemal", 4, Waktu(9, 0, 0), Waktu(21, 30, 0))
-        self.list_pegawai[2] = Pegawai("003", "Yunus", 2, Waktu(12, 40, 0), Waktu(23, 30, 0))
+        self.list_pegawai[0] = Pegawai("001", "Azrel", "Bogor", 3, Waktu(8, 30, 0), Waktu(16, 0, 0))
+        self.list_pegawai[1] = Pegawai("002", "Kemal", "Jakarta", 4, Waktu(9, 0, 0), Waktu(21, 30, 0))
+        self.list_pegawai[2] = Pegawai("003", "Yunus", "Tangerang", 2, Waktu(12, 40, 0), Waktu(23, 30, 0))
 
     def proses_semua(self):
         for p in self.list_pegawai:
@@ -147,9 +166,9 @@ class ArrayPegawai:
 
     def cetak_laporan(self):
         print("\nDaftar Gaji Harian PT Informatika")
-        garis = "+----+-----+------------+-----+----------+----------+----------+------------+-------------+-------------+-------------+------------+"
+        garis = "+----+-----+------------+------------+-----+----------+----------+----------+------------+-------------+-------------+-------------+------------+"
         print(garis)
-        print("| No | NIP | Nama       | Gol | Datang   | Pulang   | Lama     | Jam Lembur | Gaji Harian | Lembur      | Total       | Status     |")
+        print("| No | NIP | Nama       | Alamat     | Gol | Datang   | Pulang   | Lama     | Jam Lembur | Gaji Harian | Lembur      | Total       | Status     |")
         print(garis)
 
         for i, p in enumerate(self.list_pegawai):
@@ -158,6 +177,10 @@ class ArrayPegawai:
         print(garis)
 
 class Menu:
+    # constructor
+    def __init__(self):
+        pass
+
     @staticmethod
     def tampilkan_pesan(pesan):
         print(pesan)
@@ -186,11 +209,10 @@ class Menu:
             elif pilihan == 0:
                 self.tampilkan_pesan("\nProgram selesai. Terima kasih!")
                 break
+            else:
+                self.tampilkan_pesan("Pilihan tidak valid, silakan coba lagi.")
 
 
-# ============================================
-# MAIN FUNCTION
-# ============================================
 def main():
     menu = Menu()
     menu.jalankan_menu()
