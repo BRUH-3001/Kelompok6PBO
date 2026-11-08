@@ -88,12 +88,14 @@ class Pegawai(Person):
         self.gol = gol
         self.datang = datang if datang else Waktu()
         self.pulang = pulang if pulang else Waktu()
+        
         self.lama_kerja = Waktu()
         self.lama_lembur = Waktu()
         self.gaji_harian = 0
         self.uang_lembur = 0
         self.total_gaji = 0
         self.status_peringatan = ""
+        
 
     def input_pegawai(self):
         self.nip = input("Masukkan NIP          : ")
