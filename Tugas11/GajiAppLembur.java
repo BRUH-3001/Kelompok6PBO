@@ -716,7 +716,6 @@ class Menu {
             System.out.println("=================================================");
             System.out.println("1. Input Data Kendaraan Dinamis");
             System.out.println("2. Gunakan Data Hardcode (6 Objek - Contoh)");
-            System.out.println("3. Lihat Aturan & Tarif Parkir");
             System.out.println("0. Kembali ke Menu Utama");
  
             pilihan = Waktu.bacaAngkaValidasi(input, "Pilih menu : ", 0, 3);
@@ -733,33 +732,10 @@ class Menu {
                     arrHardcode.HardcodeData(dataPegawai);
                     arrHardcode.cetakLaporan();
                     break;
-                case 3:
-                    tampilkanAturanParkir();
-                    break;
                 default:
                     break;
             }
         } while (pilihan != 0);
-    }
- 
-    private void tampilkanAturanParkir() {
-        DecimalFormat r = Kendaraan.buatFormatRupiah();
-        System.out.println("\n================= ATURAN & TARIF PARKIR =================");
-        System.out.println("Tarif Umum (person atau tanpa identitas), per jam:");
-        System.out.println("  Mobil : Rp " + r.format(Mobil.TARIF_UMUM));
-        System.out.println("  Truk  : Rp " + r.format(Truk.TARIF_UMUM));
-        System.out.println("  Motor : Rp " + r.format(Motor.TARIF_UMUM));
-        System.out.println("Tarif Pegawai, per hari (<= 24 jam):");
-        System.out.println("  Mobil : Rp " + r.format(Mobil.TARIF_PEGAWAI));
-        System.out.println("  Motor : Rp " + r.format(Motor.TARIF_PEGAWAI));
-        System.out.println("  Truk  : mengikuti tarif umum");
-        System.out.println("Aturan tambahan:");
-        System.out.println("  - Durasi dibulatkan ke atas per jam, minimal 1 jam.");
-        System.out.println("  - Area dalam gedung: tarif umum + Rp " + r.format(Kendaraan.TAMBAHAN_AREA_DALAM) + " per jam.");
-        System.out.println("  - Tarif harian pegawai tidak dikenai tambahan area dalam.");
-        System.out.println("  - Truk hanya boleh parkir di area luar gedung.");
-        System.out.println("  - Pegawai diverifikasi lewat NIP pada data pegawai.");
-        System.out.println("=========================================================");
     }
  
     public static void tampilkanPesan(String pesan) {
