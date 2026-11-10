@@ -689,7 +689,7 @@ class Menu {
             System.out.println("2. Gunakan Data Hardcode (3 Objek - Sesuai Contoh)");
             System.out.println("3. Kembali ke Menu Utama");
  
-            pilihan = Waktu.bacaAngkaValidasi(input, "Pilih menu : ", 0, 2);
+            pilihan = Waktu.bacaAngkaValidasi(input, "Pilih menu : ", 1, 3);
  
             switch (pilihan) {
                 case 1:
@@ -702,13 +702,10 @@ class Menu {
                     dataPegawai.HardcodeData();
                     dataPegawai.cetakLaporan();
                     break;
-                case 3:
-                    tampilkanPesan("\nProgram selesai. Terima kasih!");
-                    break;
                 default:
                     break;
             }
-        } while (pilihan != 0);
+        } while (pilihan != 3);
     }
  
     private void menuParkir() {
@@ -719,9 +716,9 @@ class Menu {
             System.out.println("=================================================");
             System.out.println("1. Input Data Kendaraan Dinamis");
             System.out.println("2. Gunakan Data Hardcode (6 Objek - Contoh)");
-            System.out.println("0. Kembali ke Menu Utama");
+            System.out.println("3. Kembali ke Menu Utama");
  
-            pilihan = Waktu.bacaAngkaValidasi(input, "Pilih menu : ", 0, 3);
+            pilihan = Waktu.bacaAngkaValidasi(input, "Pilih menu : ", 1, 3);
  
             switch (pilihan) {
                 case 1:
@@ -735,13 +732,10 @@ class Menu {
                     arrHardcode.HardcodeData(dataPegawai);
                     arrHardcode.cetakLaporan();
                     break;
-                case 3:
-                    tampilkanPesan("\nProgram selesai. Terima kasih!");
-                    break;
                 default:
                     break;
             }
-        } while (pilihan != 0);
+        } while (pilihan != 3);
     }
  
     public static void tampilkanPesan(String pesan) {
