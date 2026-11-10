@@ -687,7 +687,7 @@ class Menu {
             System.out.println("=================================================");
             System.out.println("1. Input Data Pegawai Dinamis (3 Objek)");
             System.out.println("2. Gunakan Data Hardcode (3 Objek - Sesuai Contoh)");
-            System.out.println("0. Kembali ke Menu Utama");
+            System.out.println("3. Kembali ke Menu Utama");
  
             pilihan = Waktu.bacaAngkaValidasi(input, "Pilih menu : ", 0, 2);
  
@@ -701,6 +701,9 @@ class Menu {
                     dataPegawai = new ArrayPegawai(3);
                     dataPegawai.HardcodeData();
                     dataPegawai.cetakLaporan();
+                    break;
+                case 3:
+                    tampilkanPesan("\nProgram selesai. Terima kasih!");
                     break;
                 default:
                     break;
@@ -731,6 +734,9 @@ class Menu {
                     ArrayKendaraan arrHardcode = new ArrayKendaraan(6);
                     arrHardcode.HardcodeData(dataPegawai);
                     arrHardcode.cetakLaporan();
+                    break;
+                case 3:
+                    tampilkanPesan("\nProgram selesai. Terima kasih!");
                     break;
                 default:
                     break;
