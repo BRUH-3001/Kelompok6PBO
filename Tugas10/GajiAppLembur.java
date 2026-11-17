@@ -146,13 +146,6 @@ class Pegawai extends Person {
     private Waktu datang;
     private Waktu pulang;
 
-    private Waktu lamaKerja;
-    private Waktu lamaLembur;
-    private double gajiHarian;
-    private double uangLembur;
-    private double totalGaji;
-    private String statusPeringatan;
-
     // Method Constructor
     public Pegawai() {
         super();
@@ -160,8 +153,6 @@ class Pegawai extends Person {
         this.gol = 0;
         this.datang = new Waktu();
         this.pulang = new Waktu();
-        this.lamaKerja = new Waktu();
-        this.lamaLembur = new Waktu();
     }
 
     public Pegawai(String nip, String nama, String alamat, int gol, Waktu datang, Waktu pulang) {
@@ -170,8 +161,6 @@ class Pegawai extends Person {
         this.gol = gol;
         this.datang = datang;
         this.pulang = pulang;
-        this.lamaKerja = new Waktu();
-        this.lamaLembur = new Waktu();
     }
 
     // Method Input
@@ -189,51 +178,51 @@ class Pegawai extends Person {
         System.out.println("----------------------------------");
     }
 
-    // Method Proses
-    public void proses() {
-        lamaKerja = datang.hitungSelisih(pulang);
+    // Method Proses (dihitung langsung dari atribut yang ada)
+    public Waktu getLamaKerja() {
+        return datang.hitungSelisih(pulang);
+    }
 
-        int detikKerja = lamaKerja.getJam() * 3600 + lamaKerja.getMenit() * 60 + lamaKerja.getDetik();
-        int detik8Jam = 8 * 3600;
+    private int getDetikKerja() {
+        Waktu w = getLamaKerja();
+        return w.getJam() * 3600 + w.getMenit() * 60 + w.getDetik();
+    }
 
-        if (detikKerja >= detik8Jam) {
-            statusPeringatan = "ok";
-            int sisaLembur = detikKerja - detik8Jam;
-            lamaLembur = new Waktu(sisaLembur / 3600, (sisaLembur % 3600) / 60, sisaLembur % 60);
-        } else {
-            statusPeringatan = "peringatan";
-            lamaLembur = new Waktu(0, 0, 0);
+    public Waktu getLamaLembur() {
+        int sisa = getDetikKerja() - 8 * 3600;
+        if (sisa <= 0) {
+            return new Waktu(0, 0, 0);
         }
+        return new Waktu(sisa / 3600, (sisa % 3600) / 60, sisa % 60);
+    }
 
-        int jamLemburAktif = lamaLembur.getJam();
+    public String getStatus() {
+        return (getDetikKerja() >= 8 * 3600) ? "ok" : "peringatan";
+    }
 
+    public int getGajiHarian() {
         switch (gol) {
-            case 1:
-                gajiHarian = 150000;
-                uangLembur = jamLemburAktif * 50000;
-                break;
-            case 2:
-                gajiHarian = 200000;
-                uangLembur = jamLemburAktif * 75000;
-                break;
-            case 3:
-                gajiHarian = 400000;
-                uangLembur = jamLemburAktif * 150000;
-                break;
-            case 4:
-                gajiHarian = 500000;
-                uangLembur = jamLemburAktif * 200000;
-                break;
-            default:
-                gajiHarian = 0;
-                uangLembur = 0;
-                break;
+            case 1: return 150000;
+            case 2: return 200000;
+            case 3: return 400000;
+            case 4: return 500000;
+            default: return 0;
         }
-        totalGaji = gajiHarian + uangLembur;
+    }
+
+    public int getUangLembur() {
+        int jamLembur = getLamaLembur().getJam();
+        switch (gol) {
+            case 1: return jamLembur * 50000;
+            case 2: return jamLembur * 75000;
+            case 3: return jamLembur * 150000;
+            case 4: return jamLembur * 200000;
+            default: return 0;
+        }
     }
 
     public double getTotalGaji() {
-        return totalGaji;
+        return getGajiHarian() + getUangLembur();
     }
 
     // Method Output
@@ -241,12 +230,12 @@ class Pegawai extends Person {
         System.out.printf("| %-2d | %-3s | %-10s | %-10s | %-3d | %-8s | %-8s | %-8s | %-10s | %-11s | %-10s | %-10s | %-10s |%n",
                 no, nip, nama, alamat, gol,
                 datang.formatWaktu(), pulang.formatWaktu(),
-                lamaKerja.formatWaktu(),
-                lamaLembur.formatLembur(),
-                rupiah.format(gajiHarian),
-                rupiah.format(uangLembur),
-                rupiah.format(totalGaji),
-                statusPeringatan);
+                getLamaKerja().formatWaktu(),
+                getLamaLembur().formatLembur(),
+                rupiah.format(getGajiHarian()),
+                rupiah.format(getUangLembur()),
+                rupiah.format(getTotalGaji()),
+                getStatus());
     }
 }
 
@@ -274,14 +263,6 @@ class ArrayPegawai {
         listPegawai[0] = new Pegawai("001", "Ali", "Dago 4", 3, new Waktu(8, 0, 0), new Waktu(17, 15, 10));
         listPegawai[1] = new Pegawai("004", "Ida", "Uber 3", 2, new Waktu(8, 0, 0), new Waktu(15, 30, 0));
         listPegawai[2] = new Pegawai("005", "Adi", "Riung 10", 1, new Waktu(8, 0, 0), new Waktu(18, 0, 0));
-    }
-
-    public void prosesSemua() {
-        for (int i = 0; i < jumlahData; i++) {
-            if (listPegawai[i] != null) {
-                listPegawai[i].proses();
-            }
-        }
     }
 
     public void cetakLaporan() {
@@ -342,13 +323,11 @@ class Menu {
                 case 1:
                     ArrayPegawai arrDinamis = new ArrayPegawai(3);
                     arrDinamis.inputDaftarPegawai(input);
-                    arrDinamis.prosesSemua();
                     arrDinamis.cetakLaporan();
                     break;
                 case 2:
                     ArrayPegawai arrHardcode = new ArrayPegawai(3);
                     arrHardcode.HardcodeData();
-                    arrHardcode.prosesSemua();
                     arrHardcode.cetakLaporan();
                     break;
                 case 0:
