@@ -14,7 +14,6 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include <cmath>
 #include <sstream>
 
 using namespace std;
@@ -400,7 +399,7 @@ public:
 
 class ArrayKendaraan {
 private:
-    Kendaraan dataKendaraan[100]; // Array Objek Statis (Tanpa Pointer)
+    Kendaraan dataKendaraan[100]; // Array Objek Statis 
     int jumlahData;
     static const int LEBAR[12];
 

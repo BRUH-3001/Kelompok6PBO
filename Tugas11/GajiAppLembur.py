@@ -123,7 +123,7 @@ class Pegawai(Person):
             self.__gaji_harian, self.__uang_lembur = 200000, jam_lembur_aktif * 75000
         elif self.__gol == 3:
             self.__gaji_harian, self.__uang_lembur = 400000, jam_lembur_aktif * 150000
-        elif self.__gol == 4:
+        elif self.__gol == 4:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
             self.__gaji_harian, self.__uang_lembur = 500000, jam_lembur_aktif * 200000
         else:
             self.__gaji_harian, self.__uang_lembur = 0, 0
